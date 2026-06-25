@@ -34,18 +34,40 @@ export default function StudioPage() {
 
   useEffect(() => {
     if (!day || isNaN(day)) { router.push('/home'); return; }
-    fetch(`/api/posts/${day}`)
-      .then(r => r.json())
-      .then((data: Post) => {
+    Promise.all([
+      fetch(`/api/posts/${day}`).then(r => r.json()),
+      fetch('/api/settings').then(r => r.json()).catch(() => ({ logoUrl: '' })),
+    ])
+      .then(([data, settings]: [Post, { logoUrl?: string }]) => {
         setPost(data);
         setBgIndex(data.backgroundIndex ?? 0);
-        setLogoUrl(data.logoUrl ?? '');
+        // Global brand logo (saved once in settings) applies to every post.
+        // A post-specific logo, if ever set, takes precedence.
+        setLogoUrl(data.logoUrl || settings.logoUrl || '');
         setEditedHook(data.content.hookText);
         setEditedSolution(data.content.solutionText);
       })
       .catch(() => setToast({ message: 'Could not load this post.', type: 'error' }))
       .finally(() => setLoading(false));
   }, [day, router]);
+
+  // Upload a logo ONCE → saved to the database → shows on all 150 posts.
+  async function handleLogoUpload(url: string) {
+    setLogoUrl(url);
+    try {
+      await fetch('/api/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ logoUrl: url }),
+      });
+      setToast({
+        message: url ? 'Logo saved — it now appears on all posts!' : 'Logo removed.',
+        type: 'success',
+      });
+    } catch {
+      setToast({ message: 'Could not save logo. Please try again.', type: 'error' });
+    }
+  }
 
   async function handleRegenerate() {
     setRegenerating(true);
@@ -162,7 +184,7 @@ export default function StudioPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
 
           {/* LEFT — Live canvas preview */}
-          <div className="sticky top-20">
+          <div className="lg:sticky lg:top-20">
             <div className="max-w-xs mx-auto">
               <PostCanvas
                 post={post}
@@ -219,7 +241,7 @@ export default function StudioPage() {
                 />
               )}
               {activeSection === 'logo' && (
-                <LogoUploader logoUrl={logoUrl} onUpload={setLogoUrl} />
+                <LogoUploader logoUrl={logoUrl} onUpload={handleLogoUpload} />
               )}
             </div>
 

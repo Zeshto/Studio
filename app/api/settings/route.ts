@@ -19,7 +19,14 @@ export async function GET() {
     };
 
     for (const row of rows) {
-      settings[row.key] = typeof row.value === 'string' ? JSON.parse(row.value) : row.value;
+      // Local JSON store returns a JSON-encoded string; Neon JSONB returns an
+      // already-parsed value (and a plain-string value is NOT valid JSON, so
+      // JSON.parse would throw). Parse defensively and fall back to the raw value.
+      let value: unknown = row.value;
+      if (typeof value === 'string') {
+        try { value = JSON.parse(value); } catch { /* already a plain string */ }
+      }
+      settings[row.key] = value;
     }
 
     return NextResponse.json(settings);

@@ -117,7 +117,7 @@ const PostCanvas = forwardRef<HTMLDivElement, PostCanvasProps>(function PostCanv
           <div className="flex items-center justify-between">
             {logoUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={logoUrl} alt="Logo" style={{ height: '26px', width: 'auto', maxWidth: '85px', objectFit: 'contain', borderRadius: '5px' }} />
+              <img src={logoUrl} alt="Logo" style={{ height: 'clamp(34px, 10cqw, 50px)', width: 'auto', maxWidth: '46%', objectFit: 'contain', borderRadius: '6px' }} />
             ) : (
               <div className="flex items-center" style={{ gap: '6px' }}>
                 <div style={{
