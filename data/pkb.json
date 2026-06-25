@@ -1,0 +1,304 @@
+[
+  {
+    "id": "golden-exfolia",
+    "name": "Golden Exfolia",
+    "slug": "golden-exfolia",
+    "heroIngredients": ["Turmeric", "Honey", "Oats"],
+    "fullIngredientList": [
+      "Saponified Coconut Oil", "Saponified Olive Oil", "Saponified Castor Oil",
+      "Turmeric Powder (Curcuma longa)", "Raw Honey", "Colloidal Oatmeal", "Vitamin E (Tocopherol)"
+    ],
+    "skinConcerns": ["dullness", "uneven texture", "dead skin buildup", "lacklustre skin"],
+    "targetSkinType": ["all", "normal", "combination"],
+    "priceINR": 349,
+    "positioningLine": "Gently buff away dullness. Reveal your natural glow.",
+    "safeBenefitClaims": [
+      "helps reveal brighter-looking skin",
+      "gently buffs away the look of dullness",
+      "may help improve the appearance of skin texture",
+      "formulated to support a healthy-looking glow",
+      "designed to gently exfoliate for a refreshed look"
+    ],
+    "category": "face",
+    "emotionalHook": "tired of spending on brightening serums that never seem to work",
+    "ingredientStory": "Turmeric is an Ayurvedic gold standard for radiant skin. Honey seals in moisture while its natural enzymes gently lift dead cells. Oats soothe as they exfoliate — no harsh microbeads, just nature's own buffing agents.",
+    "isActive": true
+  },
+  {
+    "id": "heritage-glow",
+    "name": "Heritage Glow",
+    "slug": "heritage-glow",
+    "heroIngredients": ["Kesar", "Turmeric", "Sandalwood", "Almond"],
+    "fullIngredientList": [
+      "Saponified Coconut Oil", "Saponified Olive Oil", "Saponified Almond Oil",
+      "Saffron (Kesar)", "Turmeric Powder", "Sandalwood Powder", "Sweet Almond Oil", "Vitamin E"
+    ],
+    "skinConcerns": ["dryness", "sensitivity", "dull glow", "tight skin"],
+    "targetSkinType": ["dry", "sensitive", "normal"],
+    "priceINR": 449,
+    "positioningLine": "Ancient glow wisdom, bottled in handmade cold-process soap.",
+    "safeBenefitClaims": [
+      "may help support a brighter-looking complexion",
+      "designed for skin that looks and feels dry",
+      "formulated with ingredients traditionally used for a luminous look",
+      "may help skin feel softer and more comfortable",
+      "supports the look of a nourished, healthy complexion"
+    ],
+    "category": "face",
+    "emotionalHook": "your skin deserves ingredients that have stood the test of centuries",
+    "ingredientStory": "Kesar (saffron) has been used in Indian households for centuries to brighten and even skin tone. Combined with turmeric, sandalwood, and almond oil, Heritage Glow is a tribute to time-tested Ayurvedic wisdom.",
+    "isActive": true
+  },
+  {
+    "id": "radiance-glow",
+    "name": "Radiance Glow",
+    "slug": "radiance-glow",
+    "heroIngredients": ["Milk", "Saffron", "Zafran"],
+    "fullIngredientList": [
+      "Saponified Coconut Oil", "Saponified Olive Oil", "Goat Milk",
+      "Saffron Extract (Kesar)", "Zafran", "Vitamin E", "Kaolin Clay"
+    ],
+    "skinConcerns": ["pigmentation", "uneven skin tone", "dark spots", "dullness"],
+    "targetSkinType": ["all", "normal", "dry", "combination"],
+    "priceINR": 399,
+    "positioningLine": "Even out. Lighten up. Glow naturally.",
+    "safeBenefitClaims": [
+      "may help support a more even-looking skin tone",
+      "designed to help reduce the appearance of dark spots over time",
+      "formulated with brightening ingredients traditionally used in Indian beauty",
+      "may help skin appear more radiant and luminous",
+      "supports the look of a clearer, brighter complexion"
+    ],
+    "category": "face",
+    "emotionalHook": "skin so even-toned you stop reaching for the beauty filter",
+    "ingredientStory": "Milk proteins gently exfoliate while saffron and zafran — both prized in Indian and Persian beauty traditions — work together to support a more luminous, even-looking complexion.",
+    "isActive": true
+  },
+  {
+    "id": "rose-revive",
+    "name": "Rose Revive",
+    "slug": "rose-revive",
+    "heroIngredients": ["Rose", "Rose Petals"],
+    "fullIngredientList": [
+      "Saponified Coconut Oil", "Saponified Olive Oil", "Rose Hip Oil",
+      "Rose Water", "Dried Rose Petals", "Rose Fragrance (Natural)", "Vitamin E"
+    ],
+    "skinConcerns": ["sensitivity", "redness", "irritation", "reactive skin"],
+    "targetSkinType": ["sensitive", "normal", "dry"],
+    "priceINR": 299,
+    "positioningLine": "Calm, gentle, and deeply comforting for sensitive skin.",
+    "safeBenefitClaims": [
+      "designed to gently cleanse without irritating sensitive skin",
+      "may help skin feel calmer and more comfortable",
+      "formulated with soothing botanicals traditionally used for delicate skin",
+      "may help reduce the look of redness over time",
+      "supports the appearance of a calm, balanced complexion"
+    ],
+    "category": "face",
+    "emotionalHook": "sensitive skin that finally gets the gentle care it deserves",
+    "ingredientStory": "Rose has been a cornerstone of gentle skincare for millennia — from ancient Persian hammams to Indian beauty rituals. Rose Revive distils this tradition into every bar, making it a sanctuary for reactive, sensitive skin.",
+    "isActive": true
+  },
+  {
+    "id": "royal-essence",
+    "name": "Royal Essence",
+    "slug": "royal-essence",
+    "heroIngredients": ["Oudh"],
+    "fullIngredientList": [
+      "Saponified Coconut Oil", "Saponified Olive Oil", "Saponified Shea Butter",
+      "Oudh (Agarwood) Extract", "Oudh Fragrance Oil", "Vitamin E", "Kaolin Clay"
+    ],
+    "skinConcerns": ["dryness", "aging appearance", "loss of firmness look", "fragrance experience"],
+    "targetSkinType": ["dry", "mature", "normal"],
+    "priceINR": 499,
+    "positioningLine": "The luxury of oudh. The comfort of handmade soap.",
+    "safeBenefitClaims": [
+      "designed to help skin feel richly nourished",
+      "formulated for skin that appears dry or mature-looking",
+      "may help skin look and feel more supple",
+      "supports a luxurious, indulgent cleansing experience",
+      "formulated with one of the world's most prized botanical ingredients"
+    ],
+    "category": "body",
+    "emotionalHook": "luxury that goes beyond fragrance — a soap your skin will thank you for",
+    "ingredientStory": "Oudh (agarwood) is one of the most prized botanical materials in the world, revered for millennia in Middle Eastern and South Asian rituals. Royal Essence brings this rare ingredient into your daily shower.",
+    "isActive": true
+  },
+  {
+    "id": "calm-essence",
+    "name": "Calm Essence",
+    "slug": "calm-essence",
+    "heroIngredients": ["Goat Milk", "Lavender"],
+    "fullIngredientList": [
+      "Saponified Coconut Oil", "Saponified Olive Oil", "Goat Milk",
+      "Lavender Essential Oil", "Lavender Buds", "Vitamin E", "Shea Butter"
+    ],
+    "skinConcerns": ["sensitivity", "redness", "inflammation look", "stress-related skin"],
+    "targetSkinType": ["sensitive", "all", "dry"],
+    "priceINR": 329,
+    "positioningLine": "Calm your skin. Calm your mind.",
+    "safeBenefitClaims": [
+      "formulated with ingredients traditionally associated with calming sensitive skin",
+      "may help skin appear less red and more balanced",
+      "designed to gently nourish without upsetting reactive skin",
+      "goat milk's natural proteins may help skin feel softer",
+      "supports the appearance of a calm, even-toned complexion"
+    ],
+    "category": "face",
+    "emotionalHook": "skin that finally stops reacting and starts cooperating",
+    "ingredientStory": "Goat milk has a pH remarkably close to human skin, making it a naturally compatible cleanser. Lavender, one of the most studied botanicals for calming properties, makes this bar a twice-daily ritual of gentleness.",
+    "isActive": true
+  },
+  {
+    "id": "fresh-blizz",
+    "name": "Fresh Blizz",
+    "slug": "fresh-blizz",
+    "heroIngredients": ["Mushk", "Lemon", "Vitamin C"],
+    "fullIngredientList": [
+      "Saponified Coconut Oil", "Saponified Olive Oil", "Lemon Essential Oil",
+      "Mushk (Musk) Fragrance", "Ascorbic Acid (Vitamin C)", "Kaolin Clay", "Vitamin E"
+    ],
+    "skinConcerns": ["oiliness", "dullness", "enlarged pores look", "congestion"],
+    "targetSkinType": ["oily", "combination", "normal"],
+    "priceINR": 299,
+    "positioningLine": "Fresh. Bright. Balanced. Not stripped.",
+    "safeBenefitClaims": [
+      "may help skin appear less oily and more mattified",
+      "formulated to support a brighter, fresher-looking complexion",
+      "designed to cleanse without stripping the skin's natural balance",
+      "vitamin C may help support the appearance of brighter skin",
+      "may help minimize the look of enlarged pores over time"
+    ],
+    "category": "face",
+    "emotionalHook": "oily skin that finally feels balanced — not stripped, not shiny",
+    "ingredientStory": "Vitamin C is one of skincare's most studied brightening ingredients. Fresh Blizz combines it with the crisp freshness of lemon and the light, memorable scent of mushk for a cleanse that wakes up your skin and your senses.",
+    "isActive": true
+  },
+  {
+    "id": "purity-guard",
+    "name": "Purity Guard",
+    "slug": "purity-guard",
+    "heroIngredients": ["Neem", "Tulsi"],
+    "fullIngredientList": [
+      "Saponified Coconut Oil", "Saponified Olive Oil", "Neem Oil",
+      "Neem Leaf Powder", "Tulsi (Holy Basil) Powder", "Tea Tree Essential Oil", "Vitamin E"
+    ],
+    "skinConcerns": ["acne", "breakouts", "pimples", "oily skin", "congested pores"],
+    "targetSkinType": ["oily", "acne-prone", "combination"],
+    "priceINR": 279,
+    "positioningLine": "Neem + Tulsi. The original Ayurvedic skin guardians.",
+    "safeBenefitClaims": [
+      "formulated with ingredients traditionally used to support clearer-looking skin",
+      "may help reduce the appearance of blemishes over time",
+      "designed to help minimize the look of breakout-prone skin",
+      "neem is one of Ayurveda's most documented botanicals for skin clarity",
+      "may help skin appear less congested with regular use"
+    ],
+    "category": "face",
+    "emotionalHook": "breakout-prone skin that finally gets an ingredient it can trust",
+    "ingredientStory": "Neem and tulsi have been used as skin guardians in Indian households for generations — long before modern actives were synthesized. Purity Guard brings this ancient combination into a cold-process bar formulated for daily use.",
+    "isActive": true
+  },
+  {
+    "id": "charluna-glow",
+    "name": "CharLuna Glow",
+    "slug": "charluna-glow",
+    "heroIngredients": ["Activated Charcoal", "Kaolin Clay", "Lily", "Vetiver"],
+    "fullIngredientList": [
+      "Saponified Coconut Oil", "Saponified Olive Oil", "Activated Charcoal",
+      "Kaolin Clay", "Lily Extract", "Vetiver Essential Oil", "Vitamin E"
+    ],
+    "skinConcerns": ["deep congestion", "acne", "oiliness", "impurities", "enlarged pores look"],
+    "targetSkinType": ["oily", "acne-prone", "combination", "sensitive"],
+    "priceINR": 349,
+    "positioningLine": "Deep-clean. Charcoal-powered. Skin-balanced.",
+    "safeBenefitClaims": [
+      "activated charcoal may help draw out the look of impurities",
+      "kaolin clay is known to gently absorb excess surface oil",
+      "designed for skin that looks congested or prone to breakouts",
+      "may help support a cleaner, clearer-looking complexion",
+      "lily extract helps balance the deeper cleanse with gentle botanical care"
+    ],
+    "category": "face",
+    "emotionalHook": "pores that finally look clean — not just on the surface",
+    "ingredientStory": "Activated charcoal works like a magnet for the look of impurities. Kaolin clay gently absorbs excess oil without stripping. Lily and vetiver add a grounding, floral balance to every wash.",
+    "isActive": true
+  },
+  {
+    "id": "amber-calm",
+    "name": "Amber Calm",
+    "slug": "amber-calm",
+    "heroIngredients": ["Patchouli", "Clove", "Cedarwood", "Activated Charcoal", "Kaolin Clay"],
+    "fullIngredientList": [
+      "Saponified Coconut Oil", "Saponified Olive Oil", "Activated Charcoal",
+      "Kaolin Clay", "Patchouli Essential Oil", "Clove Bud Extract",
+      "Cedarwood Essential Oil", "Amber Fragrance", "Vanilla Extract", "Vitamin E"
+    ],
+    "skinConcerns": ["dryness", "dullness", "congestion", "detox", "skin reset"],
+    "targetSkinType": ["dry", "combination", "normal"],
+    "priceINR": 379,
+    "positioningLine": "A warm, grounding detox for skin that needs a reset.",
+    "safeBenefitClaims": [
+      "designed to support a deep yet nourishing cleanse",
+      "charcoal and clay help draw out the appearance of impurities",
+      "may help skin look and feel refreshed after a week of pollution exposure",
+      "formulated for skin that appears dull and congested",
+      "aromatic ingredients that turn your shower into a ritual"
+    ],
+    "category": "body",
+    "emotionalHook": "skin that craves a real reset — not just a quick rinse",
+    "ingredientStory": "Patchouli, clove, and cedarwood have long been used in aromatherapeutic skincare for their warm, grounding properties. Combined with the purifying power of charcoal and kaolin, Amber Calm is a full-sensory detox experience.",
+    "isActive": true
+  },
+  {
+    "id": "sandal-radiance",
+    "name": "Sandal Radiance",
+    "slug": "sandal-radiance",
+    "heroIngredients": ["Sandalwood", "Red Sandalwood", "Kokum Butter"],
+    "fullIngredientList": [
+      "Saponified Coconut Oil", "Saponified Olive Oil", "Kokum Butter",
+      "Sandalwood Powder", "Red Sandalwood (Rakta Chandan) Powder",
+      "Sandalwood Essential Oil", "Vitamin E"
+    ],
+    "skinConcerns": ["hyperpigmentation", "uneven tone", "dullness", "lack of glow"],
+    "targetSkinType": ["all", "normal", "dry", "combination"],
+    "priceINR": 419,
+    "positioningLine": "The classic Indian glow — sandalwood wisdom in every bar.",
+    "safeBenefitClaims": [
+      "sandalwood has centuries of documented use in Indian brightening rituals",
+      "may help support the look of a more even, radiant skin tone",
+      "kokum butter is deeply nourishing for skin that looks dull",
+      "designed to support a glowing, healthy-looking complexion",
+      "may help reduce the appearance of uneven tone over regular use"
+    ],
+    "category": "face",
+    "emotionalHook": "the glow that Indian beauty has trusted since ancient times",
+    "ingredientStory": "Sandalwood (chandan) is arguably the most iconic ingredient in Indian skincare. Red sandalwood adds its own brightening legacy. Kokum butter — a uniquely Indian fat — rounds out this bar with deep, non-greasy moisture.",
+    "isActive": true
+  },
+  {
+    "id": "hair-vitalizer",
+    "name": "Hair Vitalizer",
+    "slug": "hair-vitalizer",
+    "heroIngredients": ["Reetha", "Amla", "Shikakai"],
+    "fullIngredientList": [
+      "Saponified Coconut Oil", "Saponified Castor Oil", "Reetha (Soapnut) Extract",
+      "Amla (Indian Gooseberry) Powder", "Shikakai Powder", "Rosemary Essential Oil", "Vitamin E"
+    ],
+    "skinConcerns": ["hair fall appearance", "dry scalp", "oily scalp", "dull hair", "scalp balance"],
+    "targetSkinType": ["all hair types"],
+    "priceINR": 299,
+    "positioningLine": "The Ayurvedic trio your hair has been waiting for.",
+    "safeBenefitClaims": [
+      "reetha is a natural, plant-based alternative to synthetic surfactants",
+      "amla is traditionally associated with supporting hair strength and shine",
+      "shikakai may help support a clean, balanced scalp",
+      "designed to cleanse hair without stripping natural oils",
+      "may help hair appear shinier and more manageable with regular use"
+    ],
+    "category": "hair",
+    "emotionalHook": "hair that looks stronger and shinier without a single synthetic surfactant",
+    "ingredientStory": "Reetha, amla, and shikakai — the legendary Ayurvedic hair care trio. Used together in Indian households for centuries, they form the backbone of natural hair cleansing that supports scalp balance and shine.",
+    "isActive": true
+  }
+]

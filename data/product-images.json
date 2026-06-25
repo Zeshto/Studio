@@ -1,0 +1,80 @@
+{
+  "golden-exfolia": {
+    "imageUrl": "https://cdn.shopify.com/s/files/1/0770/5244/4917/files/8.jpg",
+    "handle": "zeshto-golden-exfolia",
+    "shopifyId": "gid://shopify/Product/9386748707061",
+    "priceINR": 174
+  },
+  "heritage-glow": {
+    "imageUrl": "https://cdn.shopify.com/s/files/1/0770/5244/4917/files/11.jpg",
+    "handle": "zeshto-heritage-glow",
+    "shopifyId": "gid://shopify/Product/9386748477685",
+    "priceINR": 174
+  },
+  "radiance-glow": {
+    "imageUrl": "https://cdn.shopify.com/s/files/1/0770/5244/4917/files/3.jpg",
+    "handle": "zeshto-radiance-glow",
+    "shopifyId": "gid://shopify/Product/9386747625717",
+    "priceINR": 259
+  },
+  "rose-revive": {
+    "imageUrl": "https://cdn.shopify.com/s/files/1/0770/5244/4917/files/13.jpg",
+    "handle": "zeshto-rose-revive",
+    "shopifyId": "gid://shopify/Product/9386748739829",
+    "priceINR": 174
+  },
+  "royal-essence": {
+    "imageUrl": "https://cdn.shopify.com/s/files/1/0770/5244/4917/files/5.jpg",
+    "handle": "zeshto-royal-essence",
+    "shopifyId": "gid://shopify/Product/9424816210165",
+    "priceINR": 259
+  },
+  "calm-essence": {
+    "imageUrl": "https://cdn.shopify.com/s/files/1/0770/5244/4917/files/7.jpg",
+    "handle": "zeshto-calm-essence",
+    "shopifyId": "gid://shopify/Product/9424816013557",
+    "priceINR": 174
+  },
+  "fresh-blizz": {
+    "imageUrl": "https://cdn.shopify.com/s/files/1/0770/5244/4917/files/4.jpg",
+    "handle": "zeshto-fresh-blizz",
+    "shopifyId": "gid://shopify/Product/9386748805365",
+    "priceINR": 259
+  },
+  "purity-guard": {
+    "imageUrl": "https://cdn.shopify.com/s/files/1/0770/5244/4917/files/6.jpg",
+    "handle": "zeshto-purity-guard",
+    "shopifyId": "gid://shopify/Product/9386746773749",
+    "priceINR": 174
+  },
+  "charluna-glow": {
+    "imageUrl": "https://cdn.shopify.com/s/files/1/0770/5244/4917/files/2_b7f955c5-c7bc-4b8d-9f31-fdfef27d08ef.jpg",
+    "handle": "zeshto-charluna-glow",
+    "shopifyId": "gid://shopify/Product/9430186164469",
+    "priceINR": 259
+  },
+  "amber-calm": {
+    "imageUrl": "https://cdn.shopify.com/s/files/1/0770/5244/4917/files/1.jpg",
+    "handle": "zeshto-amber-calm",
+    "shopifyId": "gid://shopify/Product/9430195798261",
+    "priceINR": 259
+  },
+  "mint-aura": {
+    "imageUrl": "https://cdn.shopify.com/s/files/1/0770/5244/4917/files/9.jpg",
+    "handle": "zeshto-mint-aura",
+    "shopifyId": "gid://shopify/Product/9430228369653",
+    "priceINR": 259
+  },
+  "sandal-radiance": {
+    "imageUrl": "https://cdn.shopify.com/s/files/1/0770/5244/4917/files/12.jpg",
+    "handle": "zeshto-sandal-radiance",
+    "shopifyId": "gid://shopify/Product/9429319483637",
+    "priceINR": 174
+  },
+  "hair-vitalizer": {
+    "imageUrl": "https://cdn.shopify.com/s/files/1/0770/5244/4917/files/10.jpg",
+    "handle": "zeshto-hair-vitalizer-shampoo",
+    "shopifyId": "gid://shopify/Product/9429613609205",
+    "priceINR": 304
+  }
+}

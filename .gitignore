@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local dev data — never commit (contains password hashes + dev posts)
+data/local-store.json
