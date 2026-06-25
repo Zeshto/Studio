@@ -24,12 +24,17 @@ export async function GET(req: NextRequest) {
     const ownerEmail = process.env.OWNER_EMAIL || 'owner@zeshto.com';
     const ownerPassword = process.env.OWNER_PASSWORD || 'Zeshto@2024!';
 
+    const hash = await hashPassword(ownerPassword);
     const existing = await dbQuery('SELECT id FROM users WHERE email = $1', [ownerEmail]);
     if (existing.length === 0) {
-      const hash = await hashPassword(ownerPassword);
       await dbExecute(
         'INSERT INTO users (email, password_hash) VALUES ($1, $2)',
         [ownerEmail, hash]
+      );
+    } else {
+      await dbExecute(
+        'UPDATE users SET password_hash = $1 WHERE email = $2',
+        [hash, ownerEmail]
       );
     }
 
