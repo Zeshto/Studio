@@ -92,7 +92,7 @@ const PostCanvas = forwardRef<HTMLDivElement, PostCanvasProps>(function PostCanv
       }} />
 
       {/* ── MAIN CONTENT FLEX COLUMN ── */}
-      <div className="absolute inset-0 flex flex-col" style={{ padding: '7%' }}>
+      <div className="absolute inset-0 flex flex-col" style={{ padding: '7% 7% 0 7%' }}>
 
         {/* ── HEADER: Logo + accent ── */}
         <div style={{ marginBottom: hasImage ? '4%' : '5%', flexShrink: 0 }}>
@@ -257,7 +257,7 @@ const PostCanvas = forwardRef<HTMLDivElement, PostCanvasProps>(function PostCanv
         <div style={{ flex: 1 }} />
 
         {/* ── CTA ── */}
-        <div style={{ flexShrink: 0 }}>
+        <div style={{ flexShrink: 0, marginBottom: '4%' }}>
           <div style={{
             background: ctaBg, color: ctaText,
             borderRadius: '11px', padding: '3.5% 5%',
@@ -301,29 +301,30 @@ const PostCanvas = forwardRef<HTMLDivElement, PostCanvasProps>(function PostCanv
             </p>
           ) : null}
         </div>
-      </div>
 
-      {/* Follow us bar — bottom of canvas */}
-      <div style={{
-        position: 'absolute', bottom: 0, left: 0, right: 0,
-        padding: '2.2% 5%',
-        background: isLight ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.38)',
-        borderTop: `1px solid ${isLight ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.07)'}`,
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      }}>
-        <span style={{
-          fontSize: 'clamp(6px, 1.7vw, 8px)', fontWeight: '700',
-          color: accent, letterSpacing: '0.04em', textTransform: 'uppercase',
+        {/* ── FOLLOW BAR — part of flex, always at bottom ── */}
+        <div style={{
+          flexShrink: 0,
+          margin: '0 -7%',
+          padding: '2.5% 7%',
+          background: isLight ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.38)',
+          borderTop: `1px solid ${isLight ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.07)'}`,
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         }}>
-          📸 @zeshtonaturalsoap
-        </span>
-        <span style={{
-          fontSize: 'clamp(6px, 1.7vw, 8px)', fontWeight: '700',
-          color: isLight ? 'rgba(255,255,255,0.75)' : 'rgba(255,255,255,0.65)',
-          letterSpacing: '0.04em',
-        }}>
-          🌐 www.zeshto.com
-        </span>
+          <span style={{
+            fontSize: 'clamp(6px, 1.7vw, 8px)', fontWeight: '700',
+            color: accent, letterSpacing: '0.04em', textTransform: 'uppercase',
+          }}>
+            📸 @zeshtonaturalsoap
+          </span>
+          <span style={{
+            fontSize: 'clamp(6px, 1.7vw, 8px)', fontWeight: '700',
+            color: isLight ? 'rgba(255,255,255,0.75)' : 'rgba(255,255,255,0.65)',
+            letterSpacing: '0.04em',
+          }}>
+            🌐 www.zeshto.com
+          </span>
+        </div>
       </div>
     </div>
   );
