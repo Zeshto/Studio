@@ -77,6 +77,9 @@ export default function LoginForm() {
               required
               className="w-full px-4 py-4 rounded-2xl border-2 border-gray-200 focus:border-teal-500 focus:outline-none text-base bg-white transition-colors"
             />
+            <p className="text-xs text-gray-400 mt-1.5 pl-1">
+              Hint: starts with N, ends with 9
+            </p>
           </div>
 
           {error && (
