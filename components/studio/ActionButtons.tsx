@@ -57,19 +57,39 @@ export default function ActionButtons({ post, platform, canvasId = 'post-canvas'
       const el = document.getElementById(canvasId);
       if (!el) return null;
 
-      const { width, height } = output.dimensions;
-      const scale = width / el.offsetWidth;
+      const { width: targetW, height: targetH } = output.dimensions;
+      const ow = el.offsetWidth;
+      // Derive the height from the TARGET aspect ratio, not the element's
+      // rendered height. html2canvas mishandles CSS `aspect-ratio` when it
+      // clones the node (the height collapses → stretched/cut output), so we
+      // pin an explicit pixel height that exactly matches the 9:16 / 4:5 frame.
+      const oh = Math.round((ow * targetH) / targetW);
+      const scale = targetW / ow;
 
       const canvas = await html2canvas(el, {
         scale,
         useCORS: true,
         allowTaint: true,
-        backgroundColor: null,
-        width: el.offsetWidth,
-        height: el.offsetHeight,
+        backgroundColor: '#000000',
+        width: ow,
+        height: oh,
+        windowWidth: ow,
+        windowHeight: oh,
+        onclone: (doc: Document) => {
+          const c = doc.getElementById(canvasId) as HTMLElement | null;
+          if (c) {
+            // Square corners (rounded would become black wedges in a Reel) and
+            // an explicit height so the clone renders at the exact frame size.
+            c.style.borderRadius = '0';
+            c.style.aspectRatio = 'auto';
+            c.style.height = `${oh}px`;
+            c.style.width = `${ow}px`;
+          }
+        },
       });
 
-      return new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+      // JPEG keeps the file small (~200KB vs ~1MB PNG) — ideal for phone uploads.
+      return new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.9));
     } catch (err) {
       console.error('Canvas capture error:', err);
       return null;
@@ -80,7 +100,7 @@ export default function ActionButtons({ post, platform, canvasId = 'post-canvas'
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `zeshto-day-${post.dayNumber}-${platform}.png`;
+    a.download = `zeshto-day-${post.dayNumber}-${platform}.jpg`;
     a.click();
     URL.revokeObjectURL(url);
   }
@@ -109,7 +129,7 @@ export default function ActionButtons({ post, platform, canvasId = 'post-canvas'
         return;
       }
 
-      const file = new File([blob], `zeshto-day-${post.dayNumber}.png`, { type: 'image/png' });
+      const file = new File([blob], `zeshto-day-${post.dayNumber}.jpg`, { type: 'image/jpeg' });
 
       // Try the native share sheet (best on phones — opens Instagram/WhatsApp directly).
       if (navigator.share && navigator.canShare?.({ files: [file] })) {

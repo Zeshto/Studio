@@ -15,8 +15,8 @@ export function getPlatformOutput(post: Post, platform: Platform): PlatformOutpu
         caption: post.instagram.caption,
         hashtags: post.instagram.hashtags,
         hashtagString: post.instagram.hashtags.join(' '),
-        dimensions: { width: 1080, height: 1350, label: '1080×1350 (Feed)' },
-        aspectRatio: '4/5',
+        dimensions: { width: 1080, height: 1920, label: '1080×1920 (Reel)' },
+        aspectRatio: '9/16',
       };
     case 'linkedin':
       return {
@@ -38,5 +38,5 @@ export function getPlatformOutput(post: Post, platform: Platform): PlatformOutpu
 }
 
 export function getPlatformLabel(platform: Platform): string {
-  return { instagram: 'Instagram Post', linkedin: 'LinkedIn Post', youtube: 'YouTube Short' }[platform];
+  return { instagram: 'Instagram Reel', linkedin: 'LinkedIn Post', youtube: 'YouTube Short' }[platform];
 }

@@ -19,43 +19,48 @@ const PostCanvas = forwardRef<HTMLDivElement, PostCanvasProps>(function PostCanv
   ref
 ) {
   const bg = BACKGROUNDS[bgIndex] ?? BACKGROUNDS[0];
-  const isLight = bg.textColor === 'light';
+  const isLight = bg.textColor === 'light'; // 'light' => light text on a DARK background
   const accent = bg.accentColor;
 
+  // Base colour to fade the hero image into (last stop of the bg gradient).
+  const baseColor =
+    bg.css.match(/#[0-9a-fA-F]{6}/g)?.slice(-1)[0] ?? (isLight ? '#0a0a0a' : '#ffffff');
+  // Express it as rgba() — html2canvas mis-parses the `transparent` keyword and
+  // 8-digit hex in gradients (causes a non-finite addColorStop crash on export).
+  const _bh = baseColor.replace('#', '');
+  const _br = parseInt(_bh.slice(0, 2), 16) || 0;
+  const _bg = parseInt(_bh.slice(2, 4), 16) || 0;
+  const _bb = parseInt(_bh.slice(4, 6), 16) || 0;
+  const baseRgba = (a: number) => `rgba(${_br}, ${_bg}, ${_bb}, ${a})`;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const product = (pkb as any[]).find((p: any) => p.id === post.productId);
-  const heroIngredients: string[] = product?.heroIngredients?.slice(0, 4) ?? [];
+  const heroIngredients: string[] = product?.heroIngredients?.slice(0, 3) ?? [];
   const positioningLine: string = product?.positioningLine ?? '';
 
   const hookText = editedHook ?? post.content.hookText;
   const hasImage = !!post.productImageUrl;
 
-  // ── Content-adaptive sizing ──
-  // Longer copy → smaller font, so text never overflows or overlaps. Everything
-  // scales gracefully based on how much content there is.
+  // ── Layout proportions ──
+  const isTall = platform !== 'linkedin'; // 9:16 for IG Reel + YT Short, 4:5 for LinkedIn
+  const aspectClass = isTall ? 'aspect-[9/16]' : 'aspect-[4/5]';
+  const heroHeight = isTall ? '56%' : '44%';
+  const contentTop = isTall ? '50%' : '39%'; // content overlaps the faded image edge
+
+  // ── Content-adaptive type sizing — longer copy shrinks so nothing overflows ──
   const hookLen = (hookText || '').trim().length;
-  const hookFontSize = hasImage
-    ? (hookLen > 150 ? 'clamp(9px, 2.7cqw, 13px)'
-      : hookLen > 105 ? 'clamp(10px, 3.1cqw, 15px)'
-      : 'clamp(11px, 3.6cqw, 17px)')
-    : (hookLen > 150 ? 'clamp(11px, 3.3cqw, 16px)'
-      : hookLen > 105 ? 'clamp(12px, 3.8cqw, 18px)'
-      : 'clamp(13px, 4.4cqw, 21px)');
+  const hookFontSize =
+    hookLen > 150 ? 'clamp(15px, 4.6cqw, 26px)'
+    : hookLen > 105 ? 'clamp(17px, 5.2cqw, 30px)'
+    : 'clamp(19px, 6cqw, 34px)';
 
-  const benefitLen = (positioningLine || '').trim().length;
-  const benefitFontSize = benefitLen > 70
-    ? 'clamp(8px, 2.2cqw, 11px)'
-    : 'clamp(9px, 2.6cqw, 13px)';
+  const benefitFontSize =
+    (positioningLine || '').trim().length > 70 ? 'clamp(9px, 2.7cqw, 15px)' : 'clamp(10px, 3cqw, 16px)';
 
-  // Colour tokens
-  const textPrimary   = isLight ? '#ffffff' : '#111827';
-  const textSecondary = isLight ? 'rgba(255,255,255,0.68)' : '#4b5563';
-  const textTertiary  = isLight ? 'rgba(255,255,255,0.38)' : 'rgba(0,0,0,0.28)';
-  const frameBorder   = isLight ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.12)';
-  const dividerColor  = isLight ? 'rgba(255,255,255,0.14)' : 'rgba(0,0,0,0.09)';
-  const ctaBg         = isLight ? '#ffffff' : '#0d6b66';
-  const ctaText       = isLight ? '#0d6b66' : '#ffffff';
-
-  const aspectClass = platform === 'youtube' ? 'aspect-[9/16]' : 'aspect-[4/5]';
+  // ── Colour tokens ──
+  const textPrimary = isLight ? '#ffffff' : '#0f172a';
+  const textSecondary = isLight ? 'rgba(255,255,255,0.80)' : 'rgba(15,23,42,0.66)';
+  const brandOnImage = '#ffffff';
 
   return (
     <div
@@ -64,287 +69,151 @@ const PostCanvas = forwardRef<HTMLDivElement, PostCanvasProps>(function PostCanv
       className={`relative w-full ${aspectClass} overflow-hidden select-none`}
       style={{
         background: bg.css,
-        borderRadius: '20px',
+        borderRadius: '22px',
         fontFamily: "'Inter', 'SF Pro Display', system-ui, sans-serif",
         containerType: 'inline-size',
       }}
     >
-      {/* Atmospheric glow */}
-      <div className="absolute inset-0 pointer-events-none" style={{
-        background: isLight
-          ? 'radial-gradient(ellipse at 15% 8%, rgba(255,255,255,0.20) 0%, transparent 50%)'
-          : 'radial-gradient(ellipse at 85% 92%, rgba(255,255,255,0.07) 0%, transparent 50%)',
-      }} />
+      {/* ── HERO IMAGE — full bleed across the top ── */}
+      {hasImage && (
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: heroHeight, overflow: 'hidden' }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={post.productImageUrl}
+            alt={post.productName}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+          />
+          {/* Fade the bottom of the image seamlessly into the background colour.
+              Uses zero-alpha of the SAME colour (not `transparent`) — html2canvas
+              renders the `transparent` keyword as opaque black, causing dark bands. */}
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: `linear-gradient(to bottom, ${baseRgba(0)} 36%, ${baseRgba(0.72)} 68%, ${baseRgba(1)} 100%)`,
+          }} />
+          {/* Soft top vignette so the brand row stays legible over any photo */}
+          <div style={{
+            position: 'absolute', top: 0, left: 0, right: 0, height: '34%',
+            background: 'linear-gradient(to bottom, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0) 100%)',
+          }} />
+        </div>
+      )}
 
-      {/* Corner circles — decorative */}
-      <div className="absolute pointer-events-none" style={{
-        width: '40%', paddingBottom: '40%', borderRadius: '50%',
-        top: '-10%', right: '-10%',
-        border: `1.5px solid ${isLight ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.05)'}`,
-      }} />
-      <div className="absolute pointer-events-none" style={{
-        width: '25%', paddingBottom: '25%', borderRadius: '50%',
-        top: '-4%', right: '-4%',
-        border: `1px solid ${isLight ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.04)'}`,
-      }} />
-
-      {/* Dot cluster — bottom left */}
-      <div className="absolute pointer-events-none" style={{ bottom: '7%', left: '5%' }}>
-        {[0, 1, 2].map(row => (
-          <div key={row} style={{ display: 'flex', gap: '5px', marginBottom: '5px' }}>
-            {[0, 1, 2].map(col => (
-              <div key={col} style={{
-                width: '2.5px', height: '2.5px', borderRadius: '50%',
-                background: accent,
-                opacity: Math.max(0.05, 0.22 - row * 0.05 - col * 0.03),
-              }} />
-            ))}
+      {/* ── BRAND ROW — overlaid at the very top ── */}
+      <div style={{
+        position: 'absolute', top: 0, left: 0, right: 0, zIndex: 3,
+        padding: '6% 7% 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      }}>
+        {logoUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={logoUrl} alt="Logo" style={{ height: 'clamp(34px, 11cqw, 56px)', width: 'auto', maxWidth: '50%', objectFit: 'contain' }} />
+        ) : (
+          <div className="flex items-center" style={{ gap: '7px' }}>
+            <div style={{
+              width: 'clamp(26px, 8cqw, 38px)', height: 'clamp(26px, 8cqw, 38px)', borderRadius: '9px',
+              background: accent, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 'clamp(13px, 4cqw, 19px)', fontWeight: '900', color: '#0f172a',
+              boxShadow: '0 2px 10px rgba(0,0,0,0.25)',
+            }}>Z</div>
+            <span style={{
+              fontSize: 'clamp(12px, 3.6cqw, 17px)', fontWeight: '800', color: brandOnImage,
+              letterSpacing: '0.14em', textTransform: 'uppercase',
+              textShadow: hasImage ? '0 1px 6px rgba(0,0,0,0.5)' : 'none',
+            }}>Zeshto</span>
           </div>
-        ))}
+        )}
+        <span style={{
+          fontSize: 'clamp(8px, 2.5cqw, 12px)', fontWeight: '700',
+          color: hasImage ? 'rgba(255,255,255,0.92)' : textSecondary,
+          letterSpacing: '0.02em',
+          textShadow: hasImage ? '0 1px 6px rgba(0,0,0,0.5)' : 'none',
+        }}>
+          @zeshtonaturalsoap
+        </span>
       </div>
 
-      {/* Inner frame */}
-      <div className="absolute pointer-events-none" style={{
-        inset: '3.5%', borderRadius: '14px',
-        border: `1px solid ${frameBorder}`,
-      }} />
+      {/* ── CONTENT — lower area ── */}
+      <div style={{
+        position: 'absolute', left: 0, right: 0, bottom: 0,
+        top: hasImage ? contentTop : '0',
+        zIndex: 2, display: 'flex', flexDirection: 'column',
+        padding: '0 7% 6.5%',
+      }}>
+        {/* push content to start a touch lower when there's no image */}
+        {!hasImage && <div style={{ height: '14%', flexShrink: 0 }} />}
 
-      {/* ── MAIN CONTENT FLEX COLUMN ── */}
-      <div className="absolute inset-0 flex flex-col" style={{ padding: '7% 7% 0 7%' }}>
-
-        {/* ── HEADER: Logo + accent ── */}
-        <div style={{ marginBottom: hasImage ? '3%' : '4%', flexShrink: 0 }}>
-          <div className="flex items-center justify-between">
-            {logoUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={logoUrl} alt="Logo" style={{ height: 'clamp(34px, 10cqw, 50px)', width: 'auto', maxWidth: '46%', objectFit: 'contain', borderRadius: '6px' }} />
-            ) : (
-              <div className="flex items-center" style={{ gap: '6px' }}>
-                <div style={{
-                  width: '26px', height: '26px', borderRadius: '7px',
-                  background: isLight ? 'rgba(255,255,255,0.22)' : '#0d6b66',
-                  border: `1.5px solid ${isLight ? 'rgba(255,255,255,0.38)' : 'transparent'}`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '11px', fontWeight: '800', color: '#ffffff',
-                }}>Z</div>
-                <span style={{ fontSize: 'clamp(10px, 2.6cqw, 12px)', fontWeight: '700', color: textPrimary, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-                  Zeshto
-                </span>
-              </div>
-            )}
-            <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: accent, opacity: 0.75 }} />
-          </div>
-          {/* Accent rule */}
-          <div style={{
-            marginTop: '4%', height: '1px',
-            background: `linear-gradient(to right, ${accent}66, ${accent}22, transparent)`,
-          }} />
-        </div>
-
-        {/* ── PRODUCT IMAGE (shown when available) ── */}
-        {hasImage && (
-          <div style={{
-            flexGrow: 0,
-            flexShrink: 1,
-            flexBasis: '24%',
-            minHeight: '12%',
-            marginBottom: '3.5%',
-            borderRadius: '12px',
-            overflow: 'hidden',
-            position: 'relative',
-            border: `1.5px solid ${isLight ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.12)'}`,
-            boxShadow: isLight
-              ? '0 8px 32px rgba(0,0,0,0.28), 0 2px 8px rgba(0,0,0,0.18)'
-              : '0 8px 32px rgba(0,0,0,0.45), 0 2px 8px rgba(0,0,0,0.30)',
-          }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={post.productImageUrl}
-              alt={post.productName}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-            />
-            {/* Bottom gradient on image — blends into background */}
-            <div style={{
-              position: 'absolute', bottom: 0, left: 0, right: 0, height: '40%',
-              background: isLight
-                ? 'linear-gradient(to top, rgba(0,0,0,0.35) 0%, transparent 100%)'
-                : 'linear-gradient(to top, rgba(0,0,0,0.50) 0%, transparent 100%)',
-            }} />
-            {/* Product name overlay at bottom-left of image */}
-            <div style={{
-              position: 'absolute', bottom: '8px', left: '10px',
-              fontSize: 'clamp(8px, 2cqw, 10px)',
-              fontWeight: '600',
-              color: 'rgba(255,255,255,0.90)',
-              letterSpacing: '0.04em',
-              textShadow: '0 1px 4px rgba(0,0,0,0.5)',
-            }}>
-              {post.productName}
-            </div>
-          </div>
-        )}
-
-        {/* ── HOOK TEXT ── */}
-        <div style={{
-          flexShrink: 0,
-          marginBottom: '3%',
-          position: 'relative',
-          paddingLeft: '13px',
+        {/* Eyebrow — product name */}
+        <p style={{
+          margin: '0 0 2.5% 0', flexShrink: 0,
+          fontSize: 'clamp(9px, 2.7cqw, 13px)', fontWeight: '800',
+          color: accent, letterSpacing: '0.16em', textTransform: 'uppercase',
         }}>
-          {/* Left accent strip */}
-          <div style={{
-            position: 'absolute', left: 0, top: '3px', bottom: '3px',
-            width: '3px', borderRadius: '2px',
-            background: `linear-gradient(to bottom, ${accent}, ${accent}44)`,
-          }} />
-          {/* Decorative quote */}
-          <div style={{
-            position: 'absolute', top: '-6px', left: '10px',
-            fontSize: 'clamp(24px, 7cqw, 38px)', fontWeight: '900',
-            color: accent, opacity: 0.15, lineHeight: 1,
-            fontFamily: 'Georgia, serif', userSelect: 'none',
-          }}>"</div>
-          <p style={{
-            fontSize: hookFontSize,
-            fontWeight: '800',
-            lineHeight: '1.28',
-            color: textPrimary,
-            margin: 0,
-            letterSpacing: '-0.02em',
-          }}>
-            {hookText}
-          </p>
-        </div>
+          {post.productName}
+        </p>
 
-        {/* ── DIVIDER ── */}
-        <div style={{ height: '1px', background: dividerColor, marginBottom: '3%', flexShrink: 0 }} />
+        {/* Hook — the scroll-stopper */}
+        <p style={{
+          margin: 0, flexShrink: 0,
+          fontSize: hookFontSize, fontWeight: '800', lineHeight: '1.16',
+          color: textPrimary, letterSpacing: '-0.025em',
+        }}>
+          {hookText}
+        </p>
 
-        {/* ── PRODUCT NAME (no-image path only) ── */}
-        {!hasImage && (
-          <div style={{ marginBottom: '3%', flexShrink: 0 }}>
-            <p style={{
-              fontSize: 'clamp(12px, 3.4cqw, 16px)', fontWeight: '800',
-              color: textPrimary, margin: '0 0 4px 0', letterSpacing: '-0.01em',
-            }}>
-              {post.productName}
-            </p>
-            <div style={{ width: '28px', height: '2px', borderRadius: '1px', background: accent, opacity: 0.7 }} />
-          </div>
-        )}
-
-        {/* ── SOLUTION BLOCK ── */}
+        {/* Ingredient line */}
         {heroIngredients.length > 0 && (
           <div style={{
-            flexShrink: 0,
-            marginBottom: '3%',
-            borderRadius: '10px',
-            padding: '4% 5%',
-            background: isLight ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.45)',
-            border: `1px solid ${accent}33`,
+            marginTop: '4%', flexShrink: 0,
+            display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '6px',
           }}>
-            {/* Ingredient badges */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 8px', marginBottom: '5px' }}>
-              {heroIngredients.map((ingredient: string, i: number) => (
-                <span key={i} style={{
-                  fontSize: 'clamp(7px, 1.8cqw, 9px)',
-                  fontWeight: '800',
-                  color: accent,
-                  letterSpacing: '0.07em',
-                  textTransform: 'uppercase',
-                }}>
-                  {i > 0 && <span style={{ opacity: 0.5, marginRight: '8px' }}>+</span>}
-                  {ingredient}
-                </span>
-              ))}
-            </div>
-            {/* Benefit tagline */}
-            {positioningLine ? (
-              <p style={{
-                fontSize: benefitFontSize,
-                fontWeight: '700',
-                color: '#ffffff',
-                margin: 0,
-                lineHeight: '1.35',
-                letterSpacing: '-0.01em',
-              }}>
-                {positioningLine}
-              </p>
-            ) : null}
+            {heroIngredients.map((ing, i) => (
+              <span key={i} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                {i > 0 && <span style={{ color: accent, opacity: 0.6, fontSize: 'clamp(8px, 2cqw, 11px)' }}>•</span>}
+                <span style={{
+                  fontSize: 'clamp(8px, 2.4cqw, 12px)', fontWeight: '700',
+                  color: accent, letterSpacing: '0.06em', textTransform: 'uppercase',
+                }}>{ing}</span>
+              </span>
+            ))}
           </div>
         )}
 
-        {/* Spacer */}
-        <div style={{ flex: 1 }} />
-
-        {/* ── CTA ── */}
-        <div style={{ flexShrink: 0, marginBottom: '3%' }}>
-          <div style={{
-            background: ctaBg, color: ctaText,
-            borderRadius: '11px', padding: '3.5% 5%',
-            textAlign: 'center',
-            lineHeight: '1.5',
-            boxShadow: isLight
-              ? `0 5px 20px rgba(0,0,0,0.20), 0 0 0 1px ${accent}44`
-              : '0 5px 20px rgba(0,0,0,0.32)',
-            position: 'relative', overflow: 'hidden',
+        {/* Benefit line */}
+        {positioningLine && (
+          <p style={{
+            marginTop: '2.5%', flexShrink: 0,
+            fontSize: benefitFontSize, fontWeight: '500', lineHeight: '1.4',
+            color: textSecondary, letterSpacing: '-0.005em',
           }}>
-            <div style={{
-              position: 'absolute', inset: 0, borderRadius: '11px',
-              background: 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 50%)',
-            }} />
-            <div style={{ position: 'relative' }}>
-              <div style={{
-                fontSize: 'clamp(8px, 2.4cqw, 11px)',
-                fontWeight: '800',
-                letterSpacing: '0.04em',
-                textTransform: 'uppercase',
-                marginBottom: '2px',
-              }}>
-                ✨ Real ingredients. Handmade with love.
-              </div>
-              <div style={{
-                fontSize: 'clamp(8px, 2.3cqw, 11px)',
-                fontWeight: '700',
-                letterSpacing: '0.03em',
-              }}>
-                🌿 zeshto.com &nbsp;|&nbsp; Follow @zeshto
-              </div>
-            </div>
-          </div>
-          {post.content.disclaimer ? (
-            <p style={{
-              textAlign: 'center',
-              fontSize: 'clamp(5px, 1.4cqw, 7px)',
-              color: textTertiary, margin: '4px 0 0 0', lineHeight: '1.3',
-            }}>
-              {post.content.disclaimer}
-            </p>
-          ) : null}
-        </div>
+            {positioningLine}
+          </p>
+        )}
 
-        {/* ── FOLLOW BAR — part of flex, always at bottom ── */}
+        {/* flexible spacer pushes the CTA to the bottom */}
+        <div style={{ flex: 1, minHeight: '4%' }} />
+
+        {/* CTA pill */}
         <div style={{
           flexShrink: 0,
-          margin: '0 -7%',
-          padding: '2.5% 7%',
-          background: isLight ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.38)',
-          borderTop: `1px solid ${isLight ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.07)'}`,
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          background: accent, borderRadius: '999px',
+          padding: '3.5% 6%', textAlign: 'center',
+          boxShadow: `0 6px 22px ${accent}40`,
         }}>
           <span style={{
-            fontSize: 'clamp(6px, 1.7cqw, 8px)', fontWeight: '700',
-            color: accent, letterSpacing: '0.04em', textTransform: 'uppercase',
+            fontSize: 'clamp(10px, 3cqw, 16px)', fontWeight: '800',
+            color: '#0f172a', letterSpacing: '0.01em',
           }}>
-            📸 @zeshtonaturalsoap
-          </span>
-          <span style={{
-            fontSize: 'clamp(6px, 1.7cqw, 8px)', fontWeight: '700',
-            color: isLight ? 'rgba(255,255,255,0.75)' : 'rgba(255,255,255,0.65)',
-            letterSpacing: '0.04em',
-          }}>
-            🌐 www.zeshto.com
+            Handmade for Indian skin · zeshto.com
           </span>
         </div>
+
+        {/* footer handle */}
+        <p style={{
+          margin: '3% 0 0 0', flexShrink: 0, textAlign: 'center',
+          fontSize: 'clamp(8px, 2.3cqw, 12px)', fontWeight: '600',
+          color: textSecondary, letterSpacing: '0.04em',
+        }}>
+          📸 @zeshtonaturalsoap   🌐 www.zeshto.com
+        </p>
       </div>
     </div>
   );
