@@ -76,6 +76,15 @@ export default function ActionButtons({ post, platform, canvasId = 'post-canvas'
     }
   }
 
+  function saveBlob(blob: Blob) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `zeshto-day-${post.dayNumber}-${platform}.png`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   async function handleDownload() {
     setDownloading(true);
     try {
@@ -84,13 +93,7 @@ export default function ActionButtons({ post, platform, canvasId = 'post-canvas'
         showToast('Could not capture image. Please try again.', 'error');
         return;
       }
-
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `zeshto-day-${post.dayNumber}-${platform}.png`;
-      a.click();
-      URL.revokeObjectURL(url);
+      saveBlob(blob);
       showToast('Image saved to your downloads!');
     } finally {
       setDownloading(false);
@@ -101,35 +104,36 @@ export default function ActionButtons({ post, platform, canvasId = 'post-canvas'
     setSharing(true);
     try {
       const blob = await captureCanvas();
+      if (!blob) {
+        showToast('Could not create image. Please try Download.', 'error');
+        return;
+      }
 
-      if (navigator.share && blob) {
-        const file = new File([blob], `zeshto-day-${post.dayNumber}.png`, { type: 'image/png' });
+      const file = new File([blob], `zeshto-day-${post.dayNumber}.png`, { type: 'image/png' });
 
-        const canShareFiles = navigator.canShare?.({ files: [file] });
-
-        if (canShareFiles) {
+      // Try the native share sheet (best on phones — opens Instagram/WhatsApp directly).
+      if (navigator.share && navigator.canShare?.({ files: [file] })) {
+        try {
           await navigator.share({
             files: [file],
             title: `Zeshto - Day ${post.dayNumber}`,
             text: output.caption,
           });
           showToast('Shared successfully!');
-        } else {
-          await navigator.share({
-            title: `Zeshto - Day ${post.dayNumber}`,
-            text: output.caption,
-          });
-          showToast('Share sheet opened!');
+          return;
+        } catch (err: unknown) {
+          // User dismissed the share sheet — not an error, just stop quietly.
+          if ((err as Error)?.name === 'AbortError') return;
+          // Any other failure (gesture timeout, unsupported browser): fall through
+          // to download so the user always gets a usable image.
         }
-      } else {
-        // Fallback: download
-        await handleDownload();
-        showToast('Downloaded! Open it in Instagram/WhatsApp to share.');
       }
-    } catch (err: unknown) {
-      if ((err as Error)?.name !== 'AbortError') {
-        showToast('Sharing failed. Try downloading instead.', 'error');
-      }
+
+      // Fallback: save the image so it can be posted manually.
+      saveBlob(blob);
+      showToast('Image saved — now open Instagram and upload it.');
+    } catch {
+      showToast('Could not share. Please use the Download button.', 'error');
     } finally {
       setSharing(false);
     }
