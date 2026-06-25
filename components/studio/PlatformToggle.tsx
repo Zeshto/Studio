@@ -8,9 +8,9 @@ interface PlatformToggleProps {
 }
 
 const PLATFORMS: { id: Platform; label: string; icon: string; size: string }[] = [
-  { id: 'instagram', label: 'Instagram Reel', icon: '📱', size: '1080×1920' },
-  { id: 'youtube', label: 'YouTube Short', icon: '▶️', size: '1080×1920' },
+  { id: 'instagram', label: 'Instagram Post', icon: '📱', size: '1080×1350 (Feed)' },
   { id: 'linkedin', label: 'LinkedIn Post', icon: '💼', size: '1080×1350' },
+  { id: 'youtube', label: 'YouTube Short', icon: '▶️', size: '1080×1920' },
 ];
 
 export default function PlatformToggle({ selected, onSelect }: PlatformToggleProps) {

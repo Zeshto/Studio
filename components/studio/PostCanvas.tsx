@@ -29,6 +29,23 @@ const PostCanvas = forwardRef<HTMLDivElement, PostCanvasProps>(function PostCanv
   const hookText = editedHook ?? post.content.hookText;
   const hasImage = !!post.productImageUrl;
 
+  // ── Content-adaptive sizing ──
+  // Longer copy → smaller font, so text never overflows or overlaps. Everything
+  // scales gracefully based on how much content there is.
+  const hookLen = (hookText || '').trim().length;
+  const hookFontSize = hasImage
+    ? (hookLen > 150 ? 'clamp(9px, 2.7cqw, 13px)'
+      : hookLen > 105 ? 'clamp(10px, 3.1cqw, 15px)'
+      : 'clamp(11px, 3.6cqw, 17px)')
+    : (hookLen > 150 ? 'clamp(11px, 3.3cqw, 16px)'
+      : hookLen > 105 ? 'clamp(12px, 3.8cqw, 18px)'
+      : 'clamp(13px, 4.4cqw, 21px)');
+
+  const benefitLen = (positioningLine || '').trim().length;
+  const benefitFontSize = benefitLen > 70
+    ? 'clamp(8px, 2.2cqw, 11px)'
+    : 'clamp(9px, 2.6cqw, 13px)';
+
   // Colour tokens
   const textPrimary   = isLight ? '#ffffff' : '#111827';
   const textSecondary = isLight ? 'rgba(255,255,255,0.68)' : '#4b5563';
@@ -49,6 +66,7 @@ const PostCanvas = forwardRef<HTMLDivElement, PostCanvasProps>(function PostCanv
         background: bg.css,
         borderRadius: '20px',
         fontFamily: "'Inter', 'SF Pro Display', system-ui, sans-serif",
+        containerType: 'inline-size',
       }}
     >
       {/* Atmospheric glow */}
@@ -95,7 +113,7 @@ const PostCanvas = forwardRef<HTMLDivElement, PostCanvasProps>(function PostCanv
       <div className="absolute inset-0 flex flex-col" style={{ padding: '7% 7% 0 7%' }}>
 
         {/* ── HEADER: Logo + accent ── */}
-        <div style={{ marginBottom: hasImage ? '4%' : '5%', flexShrink: 0 }}>
+        <div style={{ marginBottom: hasImage ? '3%' : '4%', flexShrink: 0 }}>
           <div className="flex items-center justify-between">
             {logoUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -109,7 +127,7 @@ const PostCanvas = forwardRef<HTMLDivElement, PostCanvasProps>(function PostCanv
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: '11px', fontWeight: '800', color: '#ffffff',
                 }}>Z</div>
-                <span style={{ fontSize: 'clamp(10px, 2.6vw, 12px)', fontWeight: '700', color: textPrimary, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                <span style={{ fontSize: 'clamp(10px, 2.6cqw, 12px)', fontWeight: '700', color: textPrimary, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
                   Zeshto
                 </span>
               </div>
@@ -126,12 +144,14 @@ const PostCanvas = forwardRef<HTMLDivElement, PostCanvasProps>(function PostCanv
         {/* ── PRODUCT IMAGE (shown when available) ── */}
         {hasImage && (
           <div style={{
-            flexShrink: 0,
-            marginBottom: '4%',
+            flexGrow: 0,
+            flexShrink: 1,
+            flexBasis: '24%',
+            minHeight: '12%',
+            marginBottom: '3.5%',
             borderRadius: '12px',
             overflow: 'hidden',
             position: 'relative',
-            height: '32%',
             border: `1.5px solid ${isLight ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.12)'}`,
             boxShadow: isLight
               ? '0 8px 32px rgba(0,0,0,0.28), 0 2px 8px rgba(0,0,0,0.18)'
@@ -153,7 +173,7 @@ const PostCanvas = forwardRef<HTMLDivElement, PostCanvasProps>(function PostCanv
             {/* Product name overlay at bottom-left of image */}
             <div style={{
               position: 'absolute', bottom: '8px', left: '10px',
-              fontSize: 'clamp(8px, 2vw, 10px)',
+              fontSize: 'clamp(8px, 2cqw, 10px)',
               fontWeight: '600',
               color: 'rgba(255,255,255,0.90)',
               letterSpacing: '0.04em',
@@ -167,7 +187,7 @@ const PostCanvas = forwardRef<HTMLDivElement, PostCanvasProps>(function PostCanv
         {/* ── HOOK TEXT ── */}
         <div style={{
           flexShrink: 0,
-          marginBottom: '4%',
+          marginBottom: '3%',
           position: 'relative',
           paddingLeft: '13px',
         }}>
@@ -180,12 +200,12 @@ const PostCanvas = forwardRef<HTMLDivElement, PostCanvasProps>(function PostCanv
           {/* Decorative quote */}
           <div style={{
             position: 'absolute', top: '-6px', left: '10px',
-            fontSize: 'clamp(24px, 7vw, 38px)', fontWeight: '900',
+            fontSize: 'clamp(24px, 7cqw, 38px)', fontWeight: '900',
             color: accent, opacity: 0.15, lineHeight: 1,
             fontFamily: 'Georgia, serif', userSelect: 'none',
           }}>"</div>
           <p style={{
-            fontSize: hasImage ? 'clamp(11px, 3.6vw, 17px)' : 'clamp(13px, 4.4vw, 21px)',
+            fontSize: hookFontSize,
             fontWeight: '800',
             lineHeight: '1.28',
             color: textPrimary,
@@ -197,13 +217,13 @@ const PostCanvas = forwardRef<HTMLDivElement, PostCanvasProps>(function PostCanv
         </div>
 
         {/* ── DIVIDER ── */}
-        <div style={{ height: '1px', background: dividerColor, marginBottom: '4%', flexShrink: 0 }} />
+        <div style={{ height: '1px', background: dividerColor, marginBottom: '3%', flexShrink: 0 }} />
 
         {/* ── PRODUCT NAME (no-image path only) ── */}
         {!hasImage && (
           <div style={{ marginBottom: '3%', flexShrink: 0 }}>
             <p style={{
-              fontSize: 'clamp(12px, 3.4vw, 16px)', fontWeight: '800',
+              fontSize: 'clamp(12px, 3.4cqw, 16px)', fontWeight: '800',
               color: textPrimary, margin: '0 0 4px 0', letterSpacing: '-0.01em',
             }}>
               {post.productName}
@@ -216,17 +236,17 @@ const PostCanvas = forwardRef<HTMLDivElement, PostCanvasProps>(function PostCanv
         {heroIngredients.length > 0 && (
           <div style={{
             flexShrink: 0,
-            marginBottom: '4%',
+            marginBottom: '3%',
             borderRadius: '10px',
             padding: '4% 5%',
-            background: isLight ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.28)',
+            background: isLight ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.45)',
             border: `1px solid ${accent}33`,
           }}>
             {/* Ingredient badges */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 8px', marginBottom: '5px' }}>
               {heroIngredients.map((ingredient: string, i: number) => (
                 <span key={i} style={{
-                  fontSize: 'clamp(7px, 1.8vw, 9px)',
+                  fontSize: 'clamp(7px, 1.8cqw, 9px)',
                   fontWeight: '800',
                   color: accent,
                   letterSpacing: '0.07em',
@@ -240,7 +260,7 @@ const PostCanvas = forwardRef<HTMLDivElement, PostCanvasProps>(function PostCanv
             {/* Benefit tagline */}
             {positioningLine ? (
               <p style={{
-                fontSize: 'clamp(9px, 2.6vw, 13px)',
+                fontSize: benefitFontSize,
                 fontWeight: '700',
                 color: '#ffffff',
                 margin: 0,
@@ -257,7 +277,7 @@ const PostCanvas = forwardRef<HTMLDivElement, PostCanvasProps>(function PostCanv
         <div style={{ flex: 1 }} />
 
         {/* ── CTA ── */}
-        <div style={{ flexShrink: 0, marginBottom: '4%' }}>
+        <div style={{ flexShrink: 0, marginBottom: '3%' }}>
           <div style={{
             background: ctaBg, color: ctaText,
             borderRadius: '11px', padding: '3.5% 5%',
@@ -274,7 +294,7 @@ const PostCanvas = forwardRef<HTMLDivElement, PostCanvasProps>(function PostCanv
             }} />
             <div style={{ position: 'relative' }}>
               <div style={{
-                fontSize: 'clamp(8px, 2.4vw, 11px)',
+                fontSize: 'clamp(8px, 2.4cqw, 11px)',
                 fontWeight: '800',
                 letterSpacing: '0.04em',
                 textTransform: 'uppercase',
@@ -283,7 +303,7 @@ const PostCanvas = forwardRef<HTMLDivElement, PostCanvasProps>(function PostCanv
                 ✨ Real ingredients. Handmade with love.
               </div>
               <div style={{
-                fontSize: 'clamp(8px, 2.3vw, 11px)',
+                fontSize: 'clamp(8px, 2.3cqw, 11px)',
                 fontWeight: '700',
                 letterSpacing: '0.03em',
               }}>
@@ -294,7 +314,7 @@ const PostCanvas = forwardRef<HTMLDivElement, PostCanvasProps>(function PostCanv
           {post.content.disclaimer ? (
             <p style={{
               textAlign: 'center',
-              fontSize: 'clamp(5px, 1.4vw, 7px)',
+              fontSize: 'clamp(5px, 1.4cqw, 7px)',
               color: textTertiary, margin: '4px 0 0 0', lineHeight: '1.3',
             }}>
               {post.content.disclaimer}
@@ -312,13 +332,13 @@ const PostCanvas = forwardRef<HTMLDivElement, PostCanvasProps>(function PostCanv
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         }}>
           <span style={{
-            fontSize: 'clamp(6px, 1.7vw, 8px)', fontWeight: '700',
+            fontSize: 'clamp(6px, 1.7cqw, 8px)', fontWeight: '700',
             color: accent, letterSpacing: '0.04em', textTransform: 'uppercase',
           }}>
             📸 @zeshtonaturalsoap
           </span>
           <span style={{
-            fontSize: 'clamp(6px, 1.7vw, 8px)', fontWeight: '700',
+            fontSize: 'clamp(6px, 1.7cqw, 8px)', fontWeight: '700',
             color: isLight ? 'rgba(255,255,255,0.75)' : 'rgba(255,255,255,0.65)',
             letterSpacing: '0.04em',
           }}>

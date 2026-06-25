@@ -39,6 +39,7 @@ export default function StudioPage() {
       .then((data: Post) => {
         setPost(data);
         setBgIndex(data.backgroundIndex ?? 0);
+        setLogoUrl(data.logoUrl ?? '');
         setEditedHook(data.content.hookText);
         setEditedSolution(data.content.solutionText);
       })

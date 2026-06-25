@@ -38,5 +38,5 @@ export function getPlatformOutput(post: Post, platform: Platform): PlatformOutpu
 }
 
 export function getPlatformLabel(platform: Platform): string {
-  return { instagram: 'Instagram Reel', linkedin: 'LinkedIn Post', youtube: 'YouTube Short' }[platform];
+  return { instagram: 'Instagram Post', linkedin: 'LinkedIn Post', youtube: 'YouTube Short' }[platform];
 }
