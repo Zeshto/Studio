@@ -126,28 +126,35 @@ export async function initDb() {
   const client = getNeonClient();
   if (!client) return; // local store doesn't need init
 
+  // Neon serverless HTTP driver requires one statement per query call
   await client.query(`
     CREATE TABLE IF NOT EXISTS users (
       id SERIAL PRIMARY KEY,
       email TEXT UNIQUE NOT NULL,
       password_hash TEXT NOT NULL,
       created_at TIMESTAMPTZ DEFAULT NOW()
-    );
+    )
+  `);
+  await client.query(`
     CREATE TABLE IF NOT EXISTS products (
       id TEXT PRIMARY KEY,
       data JSONB NOT NULL,
       updated_at TIMESTAMPTZ DEFAULT NOW()
-    );
+    )
+  `);
+  await client.query(`
     CREATE TABLE IF NOT EXISTS posts (
       id TEXT PRIMARY KEY,
       day_number INTEGER UNIQUE NOT NULL,
       data JSONB NOT NULL,
       updated_at TIMESTAMPTZ DEFAULT NOW()
-    );
+    )
+  `);
+  await client.query(`
     CREATE TABLE IF NOT EXISTS settings (
       key TEXT PRIMARY KEY,
       value JSONB NOT NULL,
       updated_at TIMESTAMPTZ DEFAULT NOW()
-    );
+    )
   `);
 }
