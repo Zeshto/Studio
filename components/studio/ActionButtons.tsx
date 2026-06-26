@@ -61,6 +61,7 @@ export default function ActionButtons({
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
   const [downloading, setDownloading] = useState(false);
   const [sharing, setSharing] = useState(false);
+  const [recording, setRecording] = useState(false);
 
   // Pre-captured image for instant sharing (keeps the user gesture alive so the
   // native share sheet opens instead of silently falling back to download).
@@ -72,7 +73,9 @@ export default function ActionButtons({
     setToast({ message, type });
   }
 
-  async function captureBlob(): Promise<Blob | null> {
+  // Renders the post card to a pixel-perfect canvas at the platform's exact
+  // target size (used by both the image and the video export).
+  async function captureSourceCanvas(): Promise<HTMLCanvasElement | null> {
     try {
       const { default: html2canvas } = await import('html2canvas');
       const el = document.getElementById(canvasId);
@@ -85,7 +88,7 @@ export default function ActionButtons({
       const oh = Math.round((ow * targetH) / targetW);
       const scale = targetW / ow;
 
-      const canvas = await html2canvas(el, {
+      return await html2canvas(el, {
         scale,
         useCORS: true,
         allowTaint: true,
@@ -104,12 +107,99 @@ export default function ActionButtons({
           }
         },
       });
-
-      // JPEG keeps the file small (~200KB vs ~1MB PNG).
-      return await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.9));
     } catch (err) {
       console.error('Canvas capture error:', err);
       return null;
+    }
+  }
+
+  async function captureBlob(): Promise<Blob | null> {
+    const canvas = await captureSourceCanvas();
+    if (!canvas) return null;
+    // JPEG keeps the file small (~200KB vs ~1MB PNG).
+    return await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.9));
+  }
+
+  // ── 10-second video export (for YouTube Shorts / Reels — they require video) ──
+  // Records the post card with a slow Ken-Burns zoom so it's a real video clip,
+  // not a frozen frame.
+  async function handleVideo() {
+    if (typeof MediaRecorder === 'undefined') {
+      showToast('This browser can’t make videos. Open the app in Chrome.', 'error');
+      return;
+    }
+    setRecording(true);
+    try {
+      const source = await captureSourceCanvas();
+      if (!source) {
+        showToast('Could not create the video. Please try again.', 'error');
+        return;
+      }
+
+      const rec = document.createElement('canvas');
+      rec.width = source.width;
+      rec.height = source.height;
+      const ctx = rec.getContext('2d');
+      if (!ctx) {
+        showToast('Could not create the video. Please try again.', 'error');
+        return;
+      }
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, rec.width, rec.height);
+      ctx.drawImage(source, 0, 0);
+
+      const mimeCandidates = [
+        'video/mp4;codecs=avc1',
+        'video/mp4',
+        'video/webm;codecs=vp9',
+        'video/webm;codecs=vp8',
+        'video/webm',
+      ];
+      const mime =
+        mimeCandidates.find(m => MediaRecorder.isTypeSupported?.(m)) || 'video/webm';
+      const stream = rec.captureStream(30);
+      const recorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 6_000_000 });
+      const chunks: BlobPart[] = [];
+      recorder.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+      const stopped = new Promise<void>(resolve => { recorder.onstop = () => resolve(); });
+      recorder.start();
+
+      const DURATION = 10000; // 10 seconds
+      const startedAt = performance.now();
+      await new Promise<void>(resolve => {
+        const draw = (now: number) => {
+          const t = Math.min((now - startedAt) / DURATION, 1);
+          const zoom = 1 + 0.08 * t; // gentle zoom from 1.0 → 1.08
+          const w = rec.width, h = rec.height;
+          const dw = w * zoom, dh = h * zoom;
+          ctx.fillStyle = '#000';
+          ctx.fillRect(0, 0, w, h);
+          ctx.drawImage(source, (w - dw) / 2, (h - dh) / 2, dw, dh);
+          if (t < 1) requestAnimationFrame(draw);
+          else resolve();
+        };
+        requestAnimationFrame(draw);
+      });
+
+      recorder.stop();
+      await stopped;
+
+      const ext = mime.includes('mp4') ? 'mp4' : 'webm';
+      const blob = new Blob(chunks, { type: mime });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `zeshto-day-${post.dayNumber}-${platform}.${ext}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+      showToast(`10-second video saved (.${ext})! Upload it to YouTube Shorts / Reels.`);
+    } catch (err) {
+      console.error('Video error:', err);
+      showToast('Could not create the video. Please try again.', 'error');
+    } finally {
+      setRecording(false);
     }
   }
 
@@ -251,7 +341,7 @@ export default function ActionButtons({
             <>📱 <b>Instagram Reel</b> · 9:16 ({output.dimensions.label}) — post to <b>Reels / Stories</b>.</>
           )}
           {platform === 'youtube' && (
-            <>▶️ <b>YouTube Short</b> · 9:16 ({output.dimensions.label}) — post to <b>Shorts</b>.</>
+            <>▶️ <b>YouTube Short</b> · 9:16 ({output.dimensions.label}) — YouTube only accepts <b>video</b>, so use <b>“Save as Video”</b> below, then upload it as a Short.</>
           )}
           {platform === 'linkedin' && (
             <>💼 <b>LinkedIn</b> · 4:5 ({output.dimensions.label}) — post as a <b>feed image</b>. Don’t use this one for a Reel/Short (it would stretch).</>
@@ -260,13 +350,18 @@ export default function ActionButtons({
 
         <div className="grid grid-cols-2 gap-3">
           <BigButton onClick={handleDownload} loading={downloading} icon="⬇️" variant="primary">
-            Download
+            Download Image
           </BigButton>
 
           <BigButton onClick={handleShare} loading={sharing} icon="📤" variant="secondary">
             Share
           </BigButton>
         </div>
+
+        {/* Video export — required for YouTube Shorts, also great for Reels */}
+        <BigButton onClick={handleVideo} loading={recording} icon="🎬" variant="primary">
+          {recording ? 'Making your 10s video…' : 'Save as Video (10s) · for YouTube / Reels'}
+        </BigButton>
 
         <BigButton onClick={handleCopyAll} icon="📋" variant="primary">
           Copy Caption + Hashtags
