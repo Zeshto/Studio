@@ -44,8 +44,10 @@ const PostCanvas = forwardRef<HTMLDivElement, PostCanvasProps>(function PostCanv
   // ── Layout proportions ──
   const isTall = platform !== 'linkedin'; // 9:16 for IG Reel + YT Short, 4:5 for LinkedIn
   const aspectClass = isTall ? 'aspect-[9/16]' : 'aspect-[4/5]';
-  const heroHeight = isTall ? '56%' : '44%';
-  const contentTop = isTall ? '50%' : '39%'; // content overlaps the faded image edge
+  // Give the 4:5 LinkedIn card a taller hero so the product is showcased fully
+  // (a short hero crops it into a wide sliver, which reads as "stretched").
+  const heroHeight = isTall ? '56%' : '52%';
+  const contentTop = isTall ? '50%' : '47%'; // content overlaps the faded image edge
 
   // ── Content-adaptive type sizing — longer copy shrinks so nothing overflows ──
   const hookLen = (hookText || '').trim().length;
