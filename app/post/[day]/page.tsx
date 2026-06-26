@@ -198,7 +198,13 @@ export default function StudioPage() {
 
             {/* Action buttons (below canvas on mobile, below preview on desktop) */}
             <div className="mt-6">
-              <ActionButtons post={post} platform={platform} />
+              <ActionButtons
+                post={post}
+                platform={platform}
+                bgIndex={bgIndex}
+                editedHook={editedHook}
+                editedSolution={editedSolution}
+              />
             </div>
           </div>
 
