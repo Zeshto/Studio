@@ -245,6 +245,19 @@ export default function ActionButtons({
       <div className="space-y-3">
         <p className="text-sm font-semibold text-gray-700">Post manually</p>
 
+        {/* Format guide — makes sure the right shape goes to the right place */}
+        <div className="rounded-xl bg-teal-50 border border-teal-100 px-3 py-2 text-xs text-teal-800">
+          {platform === 'instagram' && (
+            <>📱 <b>Instagram Reel</b> · 9:16 ({output.dimensions.label}) — post to <b>Reels / Stories</b>.</>
+          )}
+          {platform === 'youtube' && (
+            <>▶️ <b>YouTube Short</b> · 9:16 ({output.dimensions.label}) — post to <b>Shorts</b>.</>
+          )}
+          {platform === 'linkedin' && (
+            <>💼 <b>LinkedIn</b> · 4:5 ({output.dimensions.label}) — post as a <b>feed image</b>. Don’t use this one for a Reel/Short (it would stretch).</>
+          )}
+        </div>
+
         <div className="grid grid-cols-2 gap-3">
           <BigButton onClick={handleDownload} loading={downloading} icon="⬇️" variant="primary">
             Download
